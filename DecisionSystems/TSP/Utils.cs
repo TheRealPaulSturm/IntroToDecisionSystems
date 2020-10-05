@@ -8,15 +8,36 @@ namespace DecisionSystems.TSP
     {
         public static double GetDistance(IReadOnlyCollection<int> solution, IReadOnlyList<Location> cities)
         {
-            double distance = 0.0;
-            int previousCityIndex = solution.Last();
-
-            foreach (int cityIndex in solution)
+            if (solution is null)
             {
-                distance += GetDistance(cities[previousCityIndex - 1], cities[cityIndex - 1]);
-                previousCityIndex = cityIndex;
+                throw new ArgumentNullException(nameof(solution));
             }
-            return distance;
+
+            if (cities is null)
+            {
+                throw new ArgumentNullException(nameof(cities));
+            }
+            //double distance = 0.0;
+            //int previousCityIndex = solution.Last();
+
+            //foreach (int cityIndex in solution)
+            //{
+            //    distance += GetDistance(cities[previousCityIndex - 1], cities[cityIndex - 1]);
+            //    previousCityIndex = cityIndex;
+            //}
+            //return distance;
+
+
+            Location getLocation(int solutionIndex) 
+            {
+                return cities[solutionIndex - 1];
+            }
+
+            return solution
+                .Append(solution.First())
+                .Select(getLocation)
+                .Pairwise(GetDistance)
+                .Sum();
         }
 
         public static double GetDistance(Location a, Location b)
