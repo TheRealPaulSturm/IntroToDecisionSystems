@@ -79,51 +79,53 @@ else
 }
 
 @code {
-    public class UITSPSolver
-    {
-        private readonly ITSPSolver solver;
-        private IReadOnlyList<int> solution;
-
-        public string Name { get; }
-        public bool IsSelected { get; set; }
-        public string Color { get; }
-
-        public UITSPSolver(ITSPSolver solver, string name, string color)
+        public class UITSPSolver
         {
-            this.solver = solver ?? throw new ArgumentNullException(nameof(solver));
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Color = color ?? throw new ArgumentNullException(nameof(color));
+            private readonly ITSPSolver solver;
+            private IReadOnlyList<int> solution;
+
+            public string Name { get; }
+            public bool IsSelected { get; set; }
+            public string Color { get; }
+
+            public UITSPSolver(ITSPSolver solver, string name, string color)
+            {
+                this.solver = solver ?? throw new ArgumentNullException(nameof(solver));
+                Name = name ?? throw new ArgumentNullException(nameof(name));
+                Color = color ?? throw new ArgumentNullException(nameof(color));
+            }
+
+            public void Solve(IReadOnlyList<Location> cities)
+            {
+                solution = solver.Solve(cities);
+                if(solution == null) throw new Exception($"Error in solver {Name}: returned null solution.");
+
+                if (solution.Any(index => index < 1 || index > cities.Count)) throw new Exception($"Error in solver {Name}: Only indices from 1 to {cities.Count} are allowed, got {string.Join(", ", solution)}.");
+
+                if(solution.Distinct().Count() != cities.Count) throw new Exception($"Error in solver {Name}: Only indices from 1 to {cities.Count} are allowed, got {string.Join(", ", solution)}.");
+            }
+
+            public void Reset()
+            {
+                solution = null;
+            }
+
+            public bool TryGetSolution(out IReadOnlyList<int> solution)
+            {
+                solution = this.solution;
+                return solution != null;
+            }
         }
 
-        public void Solve(IReadOnlyList<Location> cities)
+        TSPSpec[] specs;
+        TSPSpec selectedTSPSpec = null;
+        bool showOptimalTour = true;
+
+        private readonly IReadOnlyCollection<UITSPSolver> solvers = new UITSPSolver[]
         {
-            solution = solver.Solve(cities);
-            if(solution == null) throw new Exception($"Error in solver {Name}: returned null solution.");
-
-            if (solution.Any(index => index < 1 || index > cities.Count)) throw new Exception($"Error in solver {Name}: Only indices from 1 to {cities.Count} are allowed, got {string.Join(", ", solution)}.");
-          
-            if(solution.Distinct().Count() != cities.Count) throw new Exception($"Error in solver {Name}: Only indices from 1 to {cities.Count} are allowed, got {string.Join(", ", solution)}.");
-        }
-
-        public void Reset()
-        {
-            solution = null;
-        }
-
-        public bool TryGetSolution(out IReadOnlyList<int> solution)
-        {
-            solution = this.solution;
-            return solution != null;
-        }
-    }
-
-    TSPSpec[] specs;
-    TSPSpec selectedTSPSpec = null;
-    bool showOptimalTour = true;
-
-    private readonly IReadOnlyCollection<UITSPSolver> solvers = new UITSPSolver[]
-    {
-        new UITSPSolver(new DummySolver(), "Dummy solver", "orange")
+        new UITSPSolver(new DummySolver(), "Dummy solver", "orange"),
+        new UITSPSolver(new RandomSolver(1), "Random Solver", "blue"),
+        new UITSPSolver(new RandomSolver(1000), "Random Solver (x 1000)", "cornflowerblue"),
     };
 
     protected override async Task OnInitializedAsync()
