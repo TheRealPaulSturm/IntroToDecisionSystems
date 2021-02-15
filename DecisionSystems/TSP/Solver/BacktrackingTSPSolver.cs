@@ -33,22 +33,11 @@ namespace DecisionSystems.TSP.Solver
 
                 for (int i = startIndex; i < baseTour.Length; i++)
                 {
-                    Swap(baseTour, startIndex, i);
+                    baseTour.Swap(startIndex, i);
                     CalculatePermutationsRecursive(baseTour, startIndex + 1, result);
-                    Swap(baseTour, startIndex, i);
+                    baseTour.Swap(startIndex, i);
                 }
             }
-        }
-
-        public static void Swap<T>(T[] items, int index1, int index2)
-        {
-            //T item1 = items[index1];
-            //items[index1] = items[index2];
-            //items[index2] = item1;
-
-            //oder so:
-
-            (items[index1], items[index2]) = (items[index2], items[index1]);
         }
     }
 }

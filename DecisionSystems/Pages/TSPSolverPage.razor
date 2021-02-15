@@ -126,7 +126,12 @@ else
         new UITSPSolver(new DummySolver(), "Dummy solver", "orange"),
         new UITSPSolver(new RandomSolver(1), "Random Solver", "blue"),
         new UITSPSolver(new RandomSolver(1000), "Random Solver (x 1000)", "cornflowerblue"),
-    };
+        new UITSPSolver(new BacktrackingTSPSolver(), "Backtracking TSP Solver", "purple"),
+        new UITSPSolver(new BranchAndBoundTSPSolver(), "Branch and Bound TSP Solver", "violet"),
+        new UITSPSolver(new NearestNeighbourConstructionTSPSolver(), "Nearest Neighbour Construction Solver", "grey"),
+        new UITSPSolver(new NearestNeighbourConstructionWithOptimalStartTSPSolver(), "Nearest Neighbour Construction Solver with Optimal Start", "dimgrey"),
+        new UITSPSolver(new GeneticAlgorithmTSPSolver(100, 100), "Genetic Algorithm TSP Solver", "green"),
+        };
 
     protected override async Task OnInitializedAsync()
     {
