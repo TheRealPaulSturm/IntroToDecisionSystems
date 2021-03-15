@@ -127,6 +127,13 @@ else
 
     private readonly IReadOnlyCollection<UIDataPredictor> dataPredictors = new UIDataPredictor[]
     {
+        new UIDataPredictor(new ConstantValuePredictor(7), "Constant Value Predictor (7)", "hotpink"),
+        new UIDataPredictor(new ConstantValuePredictor(500), "Constant Value Predictor (500)", "Tomato"),
+        new UIDataPredictor(new AverageValuePredictor(), "Average Value Predictor", "DarkKhaki"),
+        new UIDataPredictor(new RandomValuePredictor(), "Random Value Predictor", "blue"),
+        new UIDataPredictor(new InterpolateFromLeftToRightValuePredictor(), "Interpolate from left to right Value Predictor", "green"),
+        new UIDataPredictor(new GradientDescentPredictor(), "Gradient descent Predictor", "orange"),
+        
     };
 
     private DataPredictionSpec[] specs;
